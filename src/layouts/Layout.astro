@@ -6,482 +6,434 @@ interface Props {
   canonicalUrl?: string;
 }
 
-const { 
-  title, 
+const {
+  title,
   description = "AIVORIC - A luxury digital agency crafting award-winning brand experiences, websites, and digital products.",
   image = "/images/og-image.jpg",
-  canonicalUrl = Astro.url.href
+  canonicalUrl = Astro.url.href,
 } = Astro.props;
 
 const siteName = "AIVORIC";
 const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="generator" content={Astro.generator} />
-  
-  <!-- Primary Meta Tags -->
-  <title>{fullTitle}</title>
-  <meta name="title" content={fullTitle} />
-  <meta name="description" content={description} />
-  <meta name="author" content="AIVORIC Studio" />
-  
-  <!-- Canonical -->
-  <link rel="canonical" href={canonicalUrl} />
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content={canonicalUrl} />
-  <meta property="og:title" content={fullTitle} />
-  <meta property="og:description" content={description} />
-  <meta property="og:image" content={image} />
-  <meta property="og:site_name" content={siteName} />
-  
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content={canonicalUrl} />
-  <meta property="twitter:title" content={fullTitle} />
-  <meta property="twitter:description" content={description} />
-  <meta property="twitter:image" content={image} />
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  
-  <!-- Preconnect -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  
-  <!-- View Transitions -->
-  <meta name="view-transition" content="same-origin" />
-</head>
-<body>
-  <!-- Custom Cursor -->
-  <div class="cursor" id="cursor"></div>
-  
-  <!-- Preloader -->
-  <div class="preloader" id="preloader">
-    <div class="preloader-bar">
-      <div class="preloader-progress" id="preloader-progress"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0"
+    />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
+    <meta name="description" content={description} />
+    <meta name="author" content="AIVORIC Studio" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content={siteName} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={fullTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={image} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Fonts with display swap for performance -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- View Transitions -->
+    <meta name="view-transition" content="same-origin" />
+  </head>
+  <body class="bg-[#050505] text-[#EAEAEA]">
+    <!-- Custom Cursor - Desktop Only -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Simple Preloader - Fast CSS Animation -->
+    <div class="preloader" id="preloader">
+      <div class="preloader-bar">
+        <div class="preloader-progress"></div>
+      </div>
+      <div class="preloader-text">AIVORIC</div>
     </div>
-    <div class="preloader-count" id="preloader-count">0</div>
-  </div>
-  
-  <!-- Header -->
-  <header class="header" id="header">
-    <a href="/" class="header-logo">AIVORIC</a>
-    <nav class="header-nav">
-      <a href="/work" class="nav-link">Work</a>
-      <a href="/about" class="nav-link">About</a>
-      <a href="/services" class="nav-link">Services</a>
-      <a href="/blog" class="nav-link">Blog</a>
-      <a href="/contact" class="nav-link">Contact</a>
-    </nav>
-    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </header>
-  
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="/work" class="mobile-menu-link">Work</a>
-    <a href="/about" class="mobile-menu-link">About</a>
-    <a href="/services" class="mobile-menu-link">Services</a>
-    <a href="/blog" class="mobile-menu-link">Blog</a>
-    <a href="/contact" class="mobile-menu-link">Contact</a>
-  </div>
-  
-  <!-- Main Content -->
-  <main>
-    <slot />
-  </main>
-  
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-logo">AIVORIC</div>
-    <div class="footer-grid">
-      <div class="footer-column">
-        <h4>Contact</h4>
-        <a href="mailto:hello@aivoric.studio">hello@aivoric.studio</a>
-        <p>+1 (555) 123-4567</p>
-      </div>
-      <div class="footer-column">
-        <h4>Location</h4>
-        <p>New York, NY</p>
-        <p>Los Angeles, CA</p>
-      </div>
-      <div class="footer-column">
-        <h4>Follow</h4>
-        <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://behance.net" target="_blank" rel="noopener">Behance</a>
-        <a href="https://dribbble.com" target="_blank" rel="noopener">Dribbble</a>
-      </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+      <a href="/" class="header-logo">AIVORIC</a>
+      <nav class="header-nav">
+        <a href="/work" class="nav-link">Work</a>
+        <a href="/about" class="nav-link">About</a>
+        <a href="/services" class="nav-link">Services</a>
+        <a href="/blog" class="nav-link">Blog</a>
+        <a href="/contact" class="nav-link">Contact</a>
+      </nav>
+      <button
+        class="mobile-menu-btn"
+        id="mobile-menu-btn"
+        aria-label="Toggle menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/work" class="mobile-menu-link">Work</a>
+      <a href="/about" class="mobile-menu-link">About</a>
+      <a href="/services" class="mobile-menu-link">Services</a>
+      <a href="/blog" class="mobile-menu-link">Blog</a>
+      <a href="/contact" class="mobile-menu-link">Contact</a>
     </div>
-    <div class="footer-bottom">
-      <p>© 2024 AIVORIC. All Rights Reserved.</p>
-      <div>
-        <a href="/terms">Terms</a>
-        <span style="margin: 0 1rem;">·</span>
-        <a href="/privacy">Privacy</a>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-logo">AIVORIC</div>
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <a href="mailto:hello@aivoric.studio">hello@aivoric.studio</a>
+          <p>+1 (555) 123-4567</p>
+        </div>
+        <div class="footer-column">
+          <h4>Location</h4>
+          <p>New York, NY</p>
+          <p>Los Angeles, CA</p>
+        </div>
+        <div class="footer-column">
+          <h4>Follow</h4>
+          <a href="https://instagram.com" target="_blank" rel="noopener"
+            >Instagram</a
+          >
+          <a href="https://linkedin.com" target="_blank" rel="noopener"
+            >LinkedIn</a
+          >
+          <a href="https://behance.net" target="_blank" rel="noopener"
+            >Behance</a
+          >
+        </div>
       </div>
-    </div>
-  </footer>
-  
-  <!-- Floating Image (for service hovers) -->
-  <img class="floating-image" id="floating-image" src="" alt="" />
-  
-  <!-- Scripts -->
-  <script>
-    import Lenis from '@studio-freight/lenis';
-    import { gsap } from 'gsap';
-    import { ScrollTrigger } from 'gsap/ScrollTrigger';
-    
-    gsap.registerPlugin(ScrollTrigger);
-    
-    // ===========================================
-    // Custom Cursor
-    // ===========================================
-    const cursor = document.getElementById('cursor');
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-    
-    function animateCursor() {
-      const dx = mouseX - cursorX;
-      const dy = mouseY - cursorY;
-      cursorX += dx * 0.15;
-      cursorY += dy * 0.15;
-      if (cursor) {
-        cursor.style.left = cursorX + 'px';
-        cursor.style.top = cursorY + 'px';
-      }
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-    
-    // Cursor hover states
-    document.querySelectorAll('[data-cursor]').forEach((el) => {
-      const cursorText = el.getAttribute('data-cursor');
-      el.addEventListener('mouseenter', () => {
-        cursor?.classList.add('hover');
-        cursor?.setAttribute('data-text', cursorText || 'VIEW');
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor?.classList.remove('hover');
-      });
-    });
-    
-    // Project cards hover
-    document.querySelectorAll('.project-card, [data-project]').forEach((el) => {
-      el.addEventListener('mouseenter', () => {
-        cursor?.classList.add('hover');
-        cursor?.setAttribute('data-text', 'VIEW');
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor?.classList.remove('hover');
-      });
-    });
-    
-    // Blog cards hover
-    document.querySelectorAll('.blog-card, [data-blog]').forEach((el) => {
-      el.addEventListener('mouseenter', () => {
-        cursor?.classList.add('hover');
-        cursor?.setAttribute('data-text', 'READ');
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor?.classList.remove('hover');
-      });
-    });
-    
-    // Buttons hover
-    document.querySelectorAll('.btn, button[type="submit"]').forEach((el) => {
-      el.addEventListener('mouseenter', () => {
-        cursor?.classList.add('hover');
-        cursor?.setAttribute('data-text', 'CLICK');
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor?.classList.remove('hover');
-      });
-    });
-    
-    // ===========================================
-    // Preloader
-    // ===========================================
-    const preloader = document.getElementById('preloader');
-    const progress = document.getElementById('preloader-progress');
-    const count = document.getElementById('preloader-count');
-    
-    let counter = 0;
-    const interval = setInterval(() => {
-      counter += Math.random() * 3 + 1;
-      if (counter >= 100) {
-        counter = 100;
-        clearInterval(interval);
-        
+      <div class="footer-bottom">
+        <p>© 2024 AIVORIC. All Rights Reserved.</p>
+        <div>
+          <a href="/terms">Terms</a>
+          <span style="margin: 0 0.75rem;">·</span>
+          <a href="/privacy">Privacy</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Core Scripts - Lightweight -->
+    <script>
+      // ===========================================
+      // Preloader - Simple, Fast
+      // ===========================================
+      const preloader = document.getElementById("preloader");
+
+      window.addEventListener("load", () => {
         setTimeout(() => {
-          gsap.to(preloader, {
-            y: '-100%',
-            duration: 1,
-            ease: 'power4.inOut',
-            onComplete: () => {
-              if (preloader) preloader.style.display = 'none';
-              initAnimations();
+          preloader?.classList.add("loaded");
+          setTimeout(() => {
+            if (preloader) preloader.style.display = "none";
+          }, 800);
+        }, 1500);
+      });
+
+      // ===========================================
+      // Mobile Menu
+      // ===========================================
+      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuBtn?.addEventListener("click", () => {
+        mobileMenuBtn.classList.toggle("active");
+        mobileMenu?.classList.toggle("open");
+        document.body.style.overflow = mobileMenu?.classList.contains("open")
+          ? "hidden"
+          : "";
+      });
+
+      // Close menu on link click
+      mobileMenu?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenuBtn?.classList.remove("active");
+          mobileMenu?.classList.remove("open");
+          document.body.style.overflow = "";
+        });
+      });
+
+      // ===========================================
+      // Header Scroll Effect (Desktop only)
+      // ===========================================
+      if (window.innerWidth >= 1024) {
+        const header = document.getElementById("header");
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (window.scrollY > 100) {
+              header?.classList.add("scrolled");
+            } else {
+              header?.classList.remove("scrolled");
             }
-          });
-        }, 300);
+          },
+          { passive: true },
+        );
       }
-      if (progress) progress.style.width = counter + '%';
-      if (count) count.textContent = Math.floor(counter).toString();
-    }, 25);
-    
-    // ===========================================
-    // Lenis Smooth Scroll
-    // ===========================================
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
-    
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-    
-    // Sync Lenis with GSAP ScrollTrigger
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
-    
-    // ===========================================
-    // Header Scroll Effect
-    // ===========================================
-    const header = document.getElementById('header');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 100) {
-        header?.classList.add('scrolled');
-      } else {
-        header?.classList.remove('scrolled');
-      }
-    });
-    
-    // ===========================================
-    // Mobile Menu
-    // ===========================================
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    mobileMenuBtn?.addEventListener('click', () => {
-      mobileMenu?.classList.toggle('open');
-    });
-    
-    // ===========================================
-    // Initialize Animations (after preloader)
-    // ===========================================
-    function initAnimations() {
-      // Hero title animation
-      const heroTitles = document.querySelectorAll('[data-hero]');
-      gsap.from(heroTitles, {
-        y: 200,
-        opacity: 0,
-        duration: 1.2,
-        stagger: 0.2,
-        ease: 'power4.out'
-      });
-      
-      // Video mask animation
-      gsap.from('.video-mask', {
-        scale: 0.8,
-        opacity: 0,
-        duration: 1.5,
-        ease: 'power4.out'
-      });
-      
-      // Fade up elements on scroll
-      gsap.utils.toArray('.fade-up').forEach((el: any) => {
-        gsap.to(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-            toggleActions: 'play none none none'
-          },
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: 'power4.out'
-        });
-      });
-      
-      // Clip reveal elements
-      gsap.utils.toArray('.clip-reveal').forEach((el: any) => {
-        gsap.to(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-          },
-          clipPath: 'inset(0 0 0 0)',
-          duration: 1.2,
-          ease: 'power4.out'
-        });
-      });
-      
-      // Scale in elements
-      gsap.utils.toArray('.scale-in').forEach((el: any) => {
-        gsap.to(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-            toggleActions: 'play none none none'
-          },
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          ease: 'power4.out'
-        });
-      });
-      
-      // Project items with clip-path
-      document.querySelectorAll('[data-project], .project-card').forEach((item) => {
-        gsap.from(item, {
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 85%',
-            end: 'top 30%',
-            scrub: 1
-          },
-          clipPath: 'inset(100% 0 0 0)',
-          y: 100,
-          opacity: 0
-        });
-      });
-      
-      // Text reveal lines
-      document.querySelectorAll('.reveal-line').forEach((line) => {
-        gsap.to(line, {
-          scrollTrigger: {
-            trigger: line,
-            start: 'top 75%',
-            end: 'top 40%',
-            scrub: 1
-          },
-          color: '#EAEAEA'
-        });
-      });
-      
-      // Parallax images
-      gsap.utils.toArray('[data-parallax]').forEach((el: any) => {
-        const speed = el.getAttribute('data-parallax') || 0.2;
-        gsap.to(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true
-          },
-          y: () => window.innerHeight * parseFloat(speed) * -1
-        });
-      });
-      
-      // Stat counters
-      document.querySelectorAll('[data-counter]').forEach((el: any) => {
-        const target = parseInt(el.getAttribute('data-counter') || '0');
-        const suffix = el.getAttribute('data-suffix') || '';
-        
-        gsap.to(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-          },
-          innerHTML: target,
-          duration: 2,
-          snap: { innerHTML: 1 },
-          ease: 'power2.out',
-          onUpdate: function() {
-            el.innerHTML = Math.floor(this.targets()[0].innerHTML) + suffix;
+
+      // ===========================================
+      // Intersection Observer for Fade-Up Animations
+      // Works on all devices, lightweight
+      // ===========================================
+      const observerOptions = {
+        root: null,
+        rootMargin: "0px 0px -50px 0px",
+        threshold: 0.1,
+      };
+
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            fadeObserver.unobserve(entry.target);
           }
         });
+      }, observerOptions);
+
+      document.querySelectorAll(".fade-up").forEach((el) => {
+        fadeObserver.observe(el);
       });
-    }
-    
-    // ===========================================
-    // Accordion
-    // ===========================================
-    const accordionItems = document.querySelectorAll('.accordion-item');
-    const floatingImg = document.getElementById('floating-image') as HTMLImageElement;
-    
-    accordionItems.forEach((item) => {
-      const header = item.querySelector('.accordion-header');
-      
-      header?.addEventListener('click', () => {
-        const isActive = item.classList.contains('active');
-        accordionItems.forEach((i) => i.classList.remove('active'));
-        if (!isActive) item.classList.add('active');
+
+      // ===========================================
+      // Accordion
+      // ===========================================
+      document.querySelectorAll(".accordion-item").forEach((item) => {
+        const header = item.querySelector(".accordion-header");
+        header?.addEventListener("click", () => {
+          const isActive = item.classList.contains("active");
+          document
+            .querySelectorAll(".accordion-item")
+            .forEach((i) => i.classList.remove("active"));
+          if (!isActive) item.classList.add("active");
+        });
       });
-      
-      // Floating image on hover
-      item.addEventListener('mouseenter', () => {
-        const imgSrc = item.getAttribute('data-img');
-        if (imgSrc && floatingImg) {
-          floatingImg.src = imgSrc;
-          floatingImg.style.opacity = '0.4';
+
+      // ===========================================
+      // Desktop-Only Features
+      // Custom cursor, GSAP animations, Lenis scroll
+      // ===========================================
+      if (window.innerWidth >= 1024) {
+        // Custom Cursor
+        const cursor = document.getElementById("cursor");
+        let mouseX = 0,
+          mouseY = 0;
+        let cursorX = 0,
+          cursorY = 0;
+
+        document.addEventListener(
+          "mousemove",
+          (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+          },
+          { passive: true },
+        );
+
+        function animateCursor() {
+          const dx = mouseX - cursorX;
+          const dy = mouseY - cursorY;
+          cursorX += dx * 0.15;
+          cursorY += dy * 0.15;
+          if (cursor) {
+            cursor.style.left = cursorX + "px";
+            cursor.style.top = cursorY + "px";
+          }
+          requestAnimationFrame(animateCursor);
         }
-      });
-      
-      item.addEventListener('mouseleave', () => {
-        if (floatingImg) floatingImg.style.opacity = '0';
-      });
-      
-      item.addEventListener('mousemove', (e: Event) => {
-        const mouseEvent = e as MouseEvent;
-        if (floatingImg) {
-          floatingImg.style.left = mouseEvent.clientX + 20 + 'px';
-          floatingImg.style.top = mouseEvent.clientY + 20 + 'px';
-        }
-      });
-    });
-    
-    // ===========================================
-    // View Transitions
-    // ===========================================
-    document.addEventListener('astro:after-swap', () => {
-      // Re-initialize animations after page transition
-      initAnimations();
-    });
-  </script>
-  
-  <!-- Structured Data -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "AIVORIC",
-    "description": description,
-    "url": canonicalUrl,
-    "logo": "/images/logo.svg",
-    "sameAs": [
-      "https://instagram.com/aivoric",
-      "https://linkedin.com/company/aivoric",
-      "https://behance.net/aivoric",
-      "https://dribbble.com/aivoric"
-    ]
-  })} />
-</body>
+        animateCursor();
+
+        // Cursor hover states
+        document
+          .querySelectorAll(".project-card, [data-project]")
+          .forEach((el) => {
+            el.addEventListener("mouseenter", () => {
+              cursor?.classList.add("hover");
+              cursor?.setAttribute("data-text", "VIEW");
+            });
+            el.addEventListener("mouseleave", () =>
+              cursor?.classList.remove("hover"),
+            );
+          });
+
+        document.querySelectorAll(".blog-card, [data-blog]").forEach((el) => {
+          el.addEventListener("mouseenter", () => {
+            cursor?.classList.add("hover");
+            cursor?.setAttribute("data-text", "READ");
+          });
+          el.addEventListener("mouseleave", () =>
+            cursor?.classList.remove("hover"),
+          );
+        });
+
+        document.querySelectorAll(".btn").forEach((el) => {
+          el.addEventListener("mouseenter", () => {
+            cursor?.classList.add("hover");
+            cursor?.setAttribute("data-text", "CLICK");
+          });
+          el.addEventListener("mouseleave", () =>
+            cursor?.classList.remove("hover"),
+          );
+        });
+
+        // Load GSAP and Lenis for desktop only
+        Promise.all([
+          import("gsap"),
+          import("gsap/ScrollTrigger"),
+          import("@studio-freight/lenis"),
+        ])
+          .then(([{ gsap }, { ScrollTrigger }, { default: Lenis }]) => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Lenis Smooth Scroll
+            const lenis = new Lenis({
+              duration: 1.2,
+              easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+              smoothWheel: true,
+            });
+
+            function raf(time: number) {
+              lenis.raf(time);
+              requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            // Sync with GSAP
+            lenis.on("scroll", ScrollTrigger.update);
+            gsap.ticker.add((time) => lenis.raf(time * 1000));
+            gsap.ticker.lagSmoothing(0);
+
+            // Hero animations
+            const heroTitles = document.querySelectorAll("[data-hero]");
+            gsap.from(heroTitles, {
+              y: 100,
+              opacity: 0,
+              duration: 1,
+              stagger: 0.15,
+              ease: "power4.out",
+              delay: 1.6,
+            });
+
+            // Video mask scale
+            gsap.from(".video-container", {
+              scale: 0.9,
+              opacity: 0,
+              duration: 1.2,
+              ease: "power4.out",
+              delay: 1.6,
+            });
+
+            // Text color reveal on scroll
+            document.querySelectorAll(".reveal-line").forEach((line) => {
+              gsap.to(line, {
+                scrollTrigger: {
+                  trigger: line,
+                  start: "top 75%",
+                  end: "top 40%",
+                  scrub: 1,
+                },
+                color: "#EAEAEA",
+              });
+            });
+
+            // Project cards parallax
+            document.querySelectorAll("[data-project]").forEach((item) => {
+              gsap.from(item, {
+                scrollTrigger: {
+                  trigger: item,
+                  start: "top 85%",
+                  end: "top 30%",
+                  scrub: 1,
+                },
+                y: 50,
+                opacity: 0.5,
+              });
+            });
+
+            // Stat counter animation
+            document.querySelectorAll("[data-counter]").forEach((el: any) => {
+              const target = parseInt(el.getAttribute("data-counter") || "0");
+              const suffix = el.getAttribute("data-suffix") || "";
+
+              gsap.to(el, {
+                scrollTrigger: {
+                  trigger: el,
+                  start: "top 80%",
+                  toggleActions: "play none none none",
+                },
+                innerHTML: target,
+                duration: 1.5,
+                snap: { innerHTML: 1 },
+                ease: "power2.out",
+                onUpdate: function () {
+                  el.innerHTML =
+                    Math.floor(this.targets()[0].innerHTML) + suffix;
+                },
+              });
+            });
+          })
+          .catch((err) => {
+            console.log("Desktop animations not loaded:", err);
+          });
+      }
+    </script>
+
+    <!-- Structured Data -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "AIVORIC",
+        description: description,
+        url: canonicalUrl,
+        logo: "/images/logo.svg",
+        sameAs: [
+          "https://instagram.com/aivoric",
+          "https://linkedin.com/company/aivoric",
+          "https://behance.net/aivoric",
+        ],
+      })}
+    />
+  </body>
 </html>
 
 <style is:global>
-  @import '../styles/global.css';
+  @import "../styles/global.css";
 </style>
