@@ -1,0 +1,246 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+    const projects = await getCollection("projects");
+    return projects.map((project) => ({
+        params: { slug: project.slug },
+        props: { project },
+    }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+
+// Get next project
+const allProjects = await getCollection("projects");
+const sortedProjects = allProjects.sort((a, b) => a.data.order - b.data.order);
+const currentIndex = sortedProjects.findIndex((p) => p.slug === project.slug);
+const nextProject = sortedProjects[(currentIndex + 1) % sortedProjects.length];
+---
+
+<Layout
+    title={project.data.title}
+    description={project.data.challenge.slice(0, 160)}
+    image={project.data.heroImage}
+>
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-end">
+        <div class="absolute inset-0">
+            <img
+                src={project.data.heroImage}
+                alt={project.data.title}
+                class="w-full h-full object-cover"
+            />
+            <div
+                class="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/50 to-transparent"
+            >
+            </div>
+        </div>
+        <div
+            class="relative z-10 w-full pb-20"
+            style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+        >
+            <span class="text-label text-gold mb-4 block"
+                >{project.data.category}</span
+            >
+            <h1 class="text-hero font-display mb-4">{project.data.title}</h1>
+            <p class="text-body text-muted">
+                {project.data.client} — {project.data.year}
+            </p>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section
+        class="section"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-3">
+                <div class="lg:sticky lg:top-32 space-y-8">
+                    <div>
+                        <h4 class="text-label mb-2">Client</h4>
+                        <p class="text-body">{project.data.client}</p>
+                    </div>
+                    <div>
+                        <h4 class="text-label mb-2">Year</h4>
+                        <p class="text-body">{project.data.year}</p>
+                    </div>
+                    <div>
+                        <h4 class="text-label mb-2">Category</h4>
+                        <p class="text-body capitalize">
+                            {project.data.category}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-label mb-2">Services</h4>
+                        <ul class="space-y-1">
+                            {
+                                project.data.services.map((service: string) => (
+                                    <li class="text-body-sm text-muted">
+                                        {service}
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </div>
+                    {
+                        project.data.liveUrl && (
+                            <a
+                                href={project.data.liveUrl}
+                                target="_blank"
+                                rel="noopener"
+                                class="btn w-full text-center"
+                            >
+                                View Live Site
+                            </a>
+                        )
+                    }
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-9 space-y-20">
+                <!-- Challenge -->
+                <div class="fade-up">
+                    <h2 class="text-label mb-6">The Challenge</h2>
+                    <p class="text-subheading font-display leading-relaxed">
+                        {project.data.challenge}
+                    </p>
+                </div>
+
+                <!-- Solution -->
+                <div class="fade-up">
+                    <h2 class="text-label mb-6">The Solution</h2>
+                    <p class="text-body text-muted leading-relaxed">
+                        {project.data.solution}
+                    </p>
+                </div>
+
+                <!-- Image Gallery -->
+                {
+                    project.data.images.length > 0 && (
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-up">
+                            {project.data.images.map(
+                                (image: string, index: number) => (
+                                    <div
+                                        class={`${index === 0 ? "md:col-span-2" : ""} overflow-hidden`}
+                                    >
+                                        <img
+                                            src={image}
+                                            alt={`${project.data.title} - Image ${index + 1}`}
+                                            class="w-full h-auto"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                ),
+                            )}
+                        </div>
+                    )
+                }
+
+                <!-- Results -->
+                {
+                    project.data.results && (
+                        <div class="fade-up">
+                            <h2 class="text-label mb-6">The Results</h2>
+                            <p class="text-body text-muted leading-relaxed mb-8">
+                                {project.data.results}
+                            </p>
+
+                            {project.data.metrics && (
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                                    {project.data.metrics.map(
+                                        (metric: {
+                                            label: string;
+                                            value: string;
+                                        }) => (
+                                            <div class="text-center p-6 border border-subtle">
+                                                <div class="stat-number text-gold mb-2">
+                                                    {metric.value}
+                                                </div>
+                                                <div class="text-caption">
+                                                    {metric.label}
+                                                </div>
+                                            </div>
+                                        ),
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )
+                }
+
+                <!-- Testimonial -->
+                {
+                    project.data.testimonial && (
+                        <div class="card card-glass p-8 fade-up">
+                            <p class="testimonial-quote mb-6">
+                                "{project.data.testimonial.quote}"
+                            </p>
+                            <p class="text-body">
+                                {project.data.testimonial.author}
+                            </p>
+                            <p class="text-caption">
+                                {project.data.testimonial.role}
+                            </p>
+                        </div>
+                    )
+                }
+
+                <!-- Article Content -->
+                <div class="prose prose-invert prose-lg max-w-none fade-up">
+                    <Content />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Next Project -->
+    <section class="border-t border-subtle">
+        <a href={`/work/${nextProject.slug}`} class="block group" data-project>
+            <div class="relative h-[50vh] overflow-hidden">
+                <img
+                    src={nextProject.data.heroImage}
+                    alt={nextProject.data.title}
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div
+                    class="absolute inset-0 bg-charcoal/80 flex flex-col items-center justify-center"
+                >
+                    <span class="text-label mb-4">Next Project</span>
+                    <h2 class="text-section-title font-display">
+                        {nextProject.data.title}
+                    </h2>
+                </div>
+            </div>
+        </a>
+    </section>
+</Layout>
+
+<style>
+    .stat-number {
+        font-size: 36px;
+    }
+
+    .prose {
+        color: var(--color-text-secondary);
+    }
+
+    .prose h2 {
+        font-family: var(--font-display);
+        color: var(--color-text-primary);
+        margin-top: 3rem;
+    }
+
+    .prose strong {
+        color: var(--color-text-primary);
+    }
+
+    .prose ul li::marker {
+        color: var(--color-gold);
+    }
+</style>

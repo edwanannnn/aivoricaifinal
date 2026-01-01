@@ -1,0 +1,166 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const allProjects = await getCollection("projects");
+const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
+
+// Get unique categories
+const categories = ["all", ...new Set(projects.map((p) => p.data.category))];
+---
+
+<Layout
+    title="Work"
+    description="Explore our portfolio of award-winning projects in branding, digital experiences, motion design, and strategy."
+>
+    <!-- Hero Section -->
+    <section
+        class="min-h-[60vh] flex items-end pb-20"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x); padding-top: 150px;"
+    >
+        <div class="w-full">
+            <h1 class="text-hero font-display mb-6 fade-up">OUR WORK</h1>
+            <p
+                class="text-body text-muted max-w-2xl fade-up"
+                style="transition-delay: 0.1s;"
+            >
+                A curated selection of projects that define excellence. Each one
+                is a testament to our commitment to craft, innovation, and
+                transformative design.
+            </p>
+        </div>
+    </section>
+
+    <!-- Filter Bar -->
+    <section
+        class="border-t border-b border-subtle py-6"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div class="flex flex-wrap gap-6">
+            {
+                categories.map((category) => (
+                    <button
+                        class="filter-btn nav-link capitalize"
+                        data-filter={category}
+                    >
+                        {category}
+                    </button>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section
+        class="section"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            id="projects-grid"
+        >
+            {
+                projects.map((project, index) => (
+                    <a
+                        href={`/work/${project.slug}`}
+                        class="project-card fade-up"
+                        data-category={project.data.category}
+                        style={`transition-delay: ${(index % 6) * 0.1}s;`}
+                        data-project
+                    >
+                        <div class="project-card-image aspect-[4/3] bg-charcoal-light mb-4 overflow-hidden relative">
+                            <img
+                                src={project.data.heroImage}
+                                alt={project.data.title}
+                                class="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+                            <div class="project-card-overlay">
+                                <span class="text-label text-gold">
+                                    {project.data.category}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-display mb-1">
+                                    {project.data.title}
+                                </h3>
+                                <p class="text-caption text-muted">
+                                    {project.data.client}
+                                </p>
+                            </div>
+                            <span class="text-caption">
+                                {project.data.year}
+                            </span>
+                        </div>
+                    </a>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section
+        class="section border-t border-subtle text-center"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <h2 class="text-heading font-display mb-4 fade-up">
+            Have a project in mind?
+        </h2>
+        <p class="text-body text-muted mb-8 fade-up">
+            Let's create something extraordinary together.
+        </p>
+        <a href="/contact" class="btn btn-primary fade-up">Start Your Project</a
+        >
+    </section>
+</Layout>
+
+<script>
+    // Filter functionality
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const projectCards = document.querySelectorAll("[data-category]");
+
+    filterButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const filter = btn.getAttribute("data-filter");
+
+            // Update active state
+            filterButtons.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            // Filter projects
+            projectCards.forEach((card) => {
+                const category = card.getAttribute("data-category");
+                if (filter === "all" || category === filter) {
+                    (card as HTMLElement).style.display = "block";
+                    setTimeout(() => {
+                        (card as HTMLElement).style.opacity = "1";
+                        (card as HTMLElement).style.transform = "translateY(0)";
+                    }, 50);
+                } else {
+                    (card as HTMLElement).style.opacity = "0";
+                    (card as HTMLElement).style.transform = "translateY(20px)";
+                    setTimeout(() => {
+                        (card as HTMLElement).style.display = "none";
+                    }, 300);
+                }
+            });
+        });
+    });
+
+    // Set initial active state
+    filterButtons[0]?.classList.add("active");
+</script>
+
+<style>
+    .filter-btn.active::after {
+        width: 100%;
+    }
+
+    [data-category] {
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
+    }
+</style>

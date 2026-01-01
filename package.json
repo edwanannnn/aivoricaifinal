@@ -1,0 +1,19 @@
+{
+  "name": "far-fusion",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@studio-freight/lenis": "^1.0.42",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.6",
+    "gsap": "^3.14.2",
+    "swiper": "^12.0.3",
+    "tailwindcss": "^4.1.18"
+  }
+}

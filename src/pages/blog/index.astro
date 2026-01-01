@@ -1,0 +1,215 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("blog");
+const posts = allPosts.sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const featuredPost = posts.find((p) => p.data.featured);
+const regularPosts = posts.filter(
+    (p) => !p.data.featured || p.slug !== featuredPost?.slug,
+);
+
+// Get unique categories
+const categories = ["all", ...new Set(posts.map((p) => p.data.category))];
+
+// Format date
+function formatDate(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    }).format(date);
+}
+---
+
+<Layout
+    title="Blog"
+    description="Insights on design, development, strategy, and the digital industry."
+>
+    <!-- Hero Section -->
+    <section
+        class="min-h-[40vh] flex items-end pb-20"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x); padding-top: 150px;"
+    >
+        <div class="w-full">
+            <h1 class="text-hero font-display mb-6 fade-up">INSIGHTS</h1>
+            <p
+                class="text-body text-muted max-w-2xl fade-up"
+                style="transition-delay: 0.1s;"
+            >
+                Thoughts on design, technology, and craft from the AIVORIC team.
+            </p>
+        </div>
+    </section>
+
+    <!-- Featured Post -->
+    {
+        featuredPost && (
+            <section
+                class="border-t border-subtle"
+                style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+            >
+                <a
+                    href={`/blog/${featuredPost.slug}`}
+                    class="grid grid-cols-1 lg:grid-cols-2 gap-8 py-16 group"
+                    data-blog
+                >
+                    <div class="overflow-hidden">
+                        <img
+                            src={featuredPost.data.heroImage}
+                            alt={featuredPost.data.title}
+                            class="w-full aspect-[16/10] object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                        />
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <span class="text-label text-gold mb-4">Featured</span>
+                        <h2 class="text-heading font-display mb-4 group-hover:text-gold transition-colors">
+                            {featuredPost.data.title}
+                        </h2>
+                        <p class="text-body text-muted mb-6">
+                            {featuredPost.data.excerpt}
+                        </p>
+                        <div class="text-caption text-muted">
+                            {formatDate(featuredPost.data.date)} ·{" "}
+                            {featuredPost.data.readTime} min read
+                        </div>
+                    </div>
+                </a>
+            </section>
+        )
+    }
+
+    <!-- Filter Bar -->
+    <section
+        class="border-t border-b border-subtle py-6"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div class="flex flex-wrap gap-6">
+            {
+                categories.map((category) => (
+                    <button
+                        class="filter-btn nav-link capitalize"
+                        data-filter={category}
+                    >
+                        {category}
+                    </button>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- Posts Grid -->
+    <section
+        class="section"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            id="posts-grid"
+        >
+            {
+                regularPosts.map((post, index) => (
+                    <a
+                        href={`/blog/${post.slug}`}
+                        class="blog-card fade-up"
+                        data-category={post.data.category}
+                        style={`transition-delay: ${(index % 6) * 0.1}s;`}
+                        data-blog
+                    >
+                        <div class="blog-card-image aspect-[16/10] bg-charcoal-light overflow-hidden">
+                            <img
+                                src={post.data.heroImage}
+                                alt={post.data.title}
+                                class="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+                        </div>
+                        <span class="blog-card-category">
+                            {post.data.category}
+                        </span>
+                        <h3 class="blog-card-title">{post.data.title}</h3>
+                        <p class="blog-card-excerpt">{post.data.excerpt}</p>
+                        <div class="blog-card-meta">
+                            {formatDate(post.data.date)} · {post.data.readTime}{" "}
+                            min read
+                        </div>
+                    </a>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section
+        class="section border-t border-subtle text-center"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <h2 class="text-heading font-display mb-4 fade-up">Stay Updated</h2>
+        <p class="text-body text-muted mb-8 fade-up">
+            Get insights delivered to your inbox.
+        </p>
+        <form
+            class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto fade-up"
+        >
+            <input
+                type="email"
+                placeholder="your@email.com"
+                class="form-input flex-1 text-center sm:text-left"
+                required
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+    </section>
+</Layout>
+
+<script>
+    // Filter functionality
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const blogCards = document.querySelectorAll("[data-category]");
+
+    filterButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const filter = btn.getAttribute("data-filter");
+
+            // Update active state
+            filterButtons.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            // Filter posts
+            blogCards.forEach((card) => {
+                const category = card.getAttribute("data-category");
+                if (filter === "all" || category === filter) {
+                    (card as HTMLElement).style.display = "block";
+                    setTimeout(() => {
+                        (card as HTMLElement).style.opacity = "1";
+                        (card as HTMLElement).style.transform = "translateY(0)";
+                    }, 50);
+                } else {
+                    (card as HTMLElement).style.opacity = "0";
+                    (card as HTMLElement).style.transform = "translateY(20px)";
+                    setTimeout(() => {
+                        (card as HTMLElement).style.display = "none";
+                    }, 300);
+                }
+            });
+        });
+    });
+
+    // Set initial active state
+    filterButtons[0]?.classList.add("active");
+</script>
+
+<style>
+    .filter-btn.active::after {
+        width: 100%;
+    }
+
+    [data-category] {
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
+    }
+</style>

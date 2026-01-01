@@ -1,0 +1,311 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog");
+    return posts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await post.render();
+
+// Get related posts (same category)
+const allPosts = await getCollection("blog");
+const relatedPosts = allPosts
+    .filter(
+        (p) => p.slug !== post.slug && p.data.category === post.data.category,
+    )
+    .slice(0, 3);
+
+// Format date
+function formatDate(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+    }).format(date);
+}
+---
+
+<Layout
+    title={post.data.title}
+    description={post.data.excerpt}
+    image={post.data.heroImage}
+>
+    <!-- Hero Section -->
+    <section class="relative min-h-[60vh] flex items-end">
+        <div class="absolute inset-0">
+            <img
+                src={post.data.heroImage}
+                alt={post.data.title}
+                class="w-full h-full object-cover"
+            />
+            <div
+                class="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/70 to-transparent"
+            >
+            </div>
+        </div>
+        <div
+            class="relative z-10 w-full pb-20"
+            style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x); padding-top: 150px;"
+        >
+            <span class="text-label text-gold mb-4 block"
+                >{post.data.category}</span
+            >
+            <h1 class="text-hero font-display mb-6 max-w-4xl">
+                {post.data.title}
+            </h1>
+            <div class="flex flex-wrap items-center gap-4 text-body text-muted">
+                <span>{post.data.author}</span>
+                <span>·</span>
+                <span>{formatDate(post.data.date)}</span>
+                <span>·</span>
+                <span>{post.data.readTime} min read</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Article Content -->
+    <section
+        class="section"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 max-w-6xl mx-auto">
+            <!-- Table of Contents (Desktop) -->
+            {
+                headings.length > 0 && (
+                    <aside class="hidden lg:block lg:col-span-3">
+                        <div class="sticky top-32">
+                            <h4 class="text-label mb-6">On This Page</h4>
+                            <nav class="space-y-3">
+                                {headings
+                                    .filter((h) => h.depth === 2)
+                                    .map((heading) => (
+                                        <a
+                                            href={`#${heading.slug}`}
+                                            class="block text-body-sm text-muted hover:text-gold transition-colors"
+                                        >
+                                            {heading.text}
+                                        </a>
+                                    ))}
+                            </nav>
+                        </div>
+                    </aside>
+                )
+            }
+
+            <!-- Article -->
+            <article
+                class={`${headings.length > 0 ? "lg:col-span-9" : "lg:col-span-8 lg:col-start-3"} prose prose-invert prose-lg max-w-none`}
+            >
+                <Content />
+            </article>
+        </div>
+    </section>
+
+    <!-- Tags -->
+    <section
+        class="border-t border-subtle py-8"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div class="max-w-4xl mx-auto flex flex-wrap gap-3">
+            {
+                post.data.tags.map((tag: string) => (
+                    <span class="text-caption px-4 py-2 border border-subtle">
+                        {tag}
+                    </span>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- Author Bio -->
+    <section
+        class="border-t border-subtle py-16"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div class="max-w-4xl mx-auto flex items-center gap-6">
+            <div
+                class="w-16 h-16 rounded-full bg-charcoal-light flex items-center justify-center"
+            >
+                <span class="text-xl font-display"
+                    >{post.data.author.charAt(0)}</span
+                >
+            </div>
+            <div>
+                <h4 class="text-body font-display">{post.data.author}</h4>
+                <p class="text-body-sm text-muted">Writer at AIVORIC</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Share Buttons -->
+    <section
+        class="border-t border-subtle py-8"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <span class="text-label">Share This Article</span>
+            <div class="flex gap-6">
+                <a
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${Astro.url}`}
+                    target="_blank"
+                    rel="noopener"
+                    class="text-body hover:text-gold transition-colors"
+                    >Twitter</a
+                >
+                <a
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${Astro.url}`}
+                    target="_blank"
+                    rel="noopener"
+                    class="text-body hover:text-gold transition-colors"
+                    >LinkedIn</a
+                >
+                <button
+                    id="copy-link"
+                    class="text-body hover:text-gold transition-colors"
+                    >Copy Link</button
+                >
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Posts -->
+    {
+        relatedPosts.length > 0 && (
+            <section
+                class="section border-t border-subtle"
+                style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+            >
+                <h2 class="text-label mb-12">You Might Also Like</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    {relatedPosts.map((relatedPost) => (
+                        <a
+                            href={`/blog/${relatedPost.slug}`}
+                            class="blog-card"
+                            data-blog
+                        >
+                            <div class="blog-card-image aspect-[16/10] bg-charcoal-light overflow-hidden mb-4">
+                                <img
+                                    src={relatedPost.data.heroImage}
+                                    alt={relatedPost.data.title}
+                                    class="w-full h-full object-cover"
+                                    loading="lazy"
+                                />
+                            </div>
+                            <span class="blog-card-category">
+                                {relatedPost.data.category}
+                            </span>
+                            <h3 class="blog-card-title">
+                                {relatedPost.data.title}
+                            </h3>
+                        </a>
+                    ))}
+                </div>
+            </section>
+        )
+    }
+
+    <!-- CTA -->
+    <section
+        class="section border-t border-subtle text-center"
+        style="padding-left: var(--section-padding-x); padding-right: var(--section-padding-x);"
+    >
+        <a href="/blog" class="btn">← Back to All Posts</a>
+    </section>
+</Layout>
+
+<script>
+    // Copy link functionality
+    const copyBtn = document.getElementById("copy-link");
+    copyBtn?.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(window.location.href);
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => {
+            copyBtn.textContent = "Copy Link";
+        }, 2000);
+    });
+</script>
+
+<style>
+    .prose {
+        color: var(--color-text-secondary);
+    }
+
+    .prose h2 {
+        font-family: var(--font-display);
+        color: var(--color-text-primary);
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+        font-size: 32px;
+    }
+
+    .prose h3 {
+        font-family: var(--font-display);
+        color: var(--color-text-primary);
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        font-size: 24px;
+    }
+
+    .prose p {
+        margin-bottom: 1.5rem;
+        line-height: 1.8;
+    }
+
+    .prose strong {
+        color: var(--color-text-primary);
+    }
+
+    .prose a {
+        color: var(--color-gold);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .prose ul,
+    .prose ol {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+    }
+
+    .prose li {
+        margin-bottom: 0.5rem;
+    }
+
+    .prose li::marker {
+        color: var(--color-gold);
+    }
+
+    .prose blockquote {
+        border-left: 2px solid var(--color-gold);
+        padding-left: 1.5rem;
+        font-style: italic;
+        color: var(--color-text-primary);
+        margin: 2rem 0;
+    }
+
+    .prose pre {
+        background: var(--color-charcoal-light);
+        border: 1px solid var(--color-border);
+        padding: 1.5rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+    }
+
+    .prose code {
+        font-family: "Monaco", "Consolas", monospace;
+        font-size: 0.875em;
+    }
+
+    .prose :not(pre) > code {
+        background: var(--color-charcoal-light);
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+    }
+</style>
